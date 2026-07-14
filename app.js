@@ -229,5 +229,163 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 4000);
     }
 
+    // ------------------------------------------------------------------------
+    // --- HTML5 Guided Audio Tour (Speech Synthesis System) ---
+    // ------------------------------------------------------------------------
+    const playBtn = document.getElementById('audio-play-btn');
+    const stopBtn = document.getElementById('audio-stop-btn');
+    const voiceSelect = document.getElementById('voice-select');
+    const speedSelect = document.getElementById('speed-select');
+    const equalizer = document.getElementById('equalizer-bars');
+    const narrativeBlocks = document.querySelectorAll('.narrative-block');
+
+    let synth = window.speechSynthesis;
+    let voices = [];
+    let currentUtterance = null;
+    let currentReadingIndex = -1;
+    let isPlaying = false;
+    let isPaused = false;
+
+    function populateVoices() {
+        if (!synth) return;
+        voices = synth.getVoices();
+        voiceSelect.innerHTML = '<option value="">Default System Voice</option>';
+        
+        // Filter for English speaking voices or fallback
+        const englishVoices = voices.filter(v => v.lang.includes('en'));
+        const targetList = englishVoices.length > 0 ? englishVoices : voices;
+
+        targetList.forEach((voice, index) => {
+            const option = document.createElement('option');
+            option.value = voice.name;
+            option.textContent = `${voice.name} (${voice.lang})`;
+            voiceSelect.appendChild(option);
+        });
+    }
+
+    // Chrome loads voices asynchronously
+    populateVoices();
+    if (synth && synth.onvoiceschanged !== undefined) {
+        synth.onvoiceschanged = populateVoices;
+    }
+
+    function readBlock(index) {
+        if (!synth || index >= narrativeBlocks.length) {
+            resetAudioState();
+            return;
+        }
+
+        currentReadingIndex = index;
+        const block = narrativeBlocks[index];
+        const text = block.querySelector('p').textContent;
+
+        // Reset highlights
+        narrativeBlocks.forEach(b => b.classList.remove('reading-active'));
+        block.classList.add('reading-active');
+
+        // Create Utterance
+        currentUtterance = new SpeechSynthesisUtterance(text);
+        
+        // Set Speed/Rate
+        currentUtterance.rate = parseFloat(speedSelect.value) || 1.0;
+
+        // Set Voice
+        const selectedVoiceName = voiceSelect.value;
+        if (selectedVoiceName) {
+            const voice = voices.find(v => v.name === selectedVoiceName);
+            if (voice) currentUtterance.voice = voice;
+        }
+
+        currentUtterance.onstart = () => {
+            isPlaying = true;
+            playBtn.innerHTML = '<i data-lucide="pause" style="width: 14px; height: 14px;"></i> Pause Tour';
+            if (window.lucide) window.lucide.createIcons();
+            equalizer.classList.add('playing');
+            stopBtn.disabled = false;
+        };
+
+        currentUtterance.onend = () => {
+            block.classList.remove('reading-active');
+            if (isPlaying) {
+                readBlock(index + 1);
+            }
+        };
+
+        currentUtterance.onerror = (e) => {
+            console.error('Speech synthesis error:', e);
+            resetAudioState();
+        };
+
+        synth.speak(currentUtterance);
+    }
+
+    function resetAudioState() {
+        if (synth) {
+            synth.cancel();
+        }
+        isPlaying = false;
+        isPaused = false;
+        currentReadingIndex = -1;
+        currentUtterance = null;
+        
+        narrativeBlocks.forEach(b => b.classList.remove('reading-active'));
+        equalizer.classList.remove('playing');
+        playBtn.innerHTML = '<i data-lucide="play" style="width: 14px; height: 14px;"></i> Listen Guided Tour';
+        if (window.lucide) window.lucide.createIcons();
+        stopBtn.disabled = true;
+    }
+
+    playBtn.addEventListener('click', () => {
+        if (!synth) {
+            showToast('Text-to-Speech is not supported in this browser.', 'error');
+            return;
+        }
+
+        if (isPlaying) {
+            if (isPaused) {
+                synth.resume();
+                isPaused = false;
+                equalizer.classList.add('playing');
+                playBtn.innerHTML = '<i data-lucide="pause" style="width: 14px; height: 14px;"></i> Pause Tour';
+                if (window.lucide) window.lucide.createIcons();
+            } else {
+                synth.pause();
+                isPaused = true;
+                equalizer.classList.remove('playing');
+                playBtn.innerHTML = '<i data-lucide="play" style="width: 14px; height: 14px;"></i> Resume Tour';
+                if (window.lucide) window.lucide.createIcons();
+            }
+        } else {
+            resetAudioState();
+            readBlock(0);
+        }
+    });
+
+    stopBtn.addEventListener('click', () => {
+        resetAudioState();
+    });
+
+    // Speed or Voice change resets speech to pick up new properties
+    speedSelect.addEventListener('change', () => {
+        if (isPlaying && currentReadingIndex !== -1) {
+            const currentIdx = currentReadingIndex;
+            resetAudioState();
+            readBlock(currentIdx);
+        }
+    });
+
+    voiceSelect.addEventListener('change', () => {
+        if (isPlaying && currentReadingIndex !== -1) {
+            const currentIdx = currentReadingIndex;
+            resetAudioState();
+            readBlock(currentIdx);
+        }
+    });
+
+    // Handle page unload to stop any running audio
+    window.addEventListener('beforeunload', () => {
+        if (synth) synth.cancel();
+    });
+
     updateTicketUI();
 });

@@ -126,6 +126,94 @@
         </div>
       </section>
 
+      <!-- Interactive System Audio Tour (Read or Listen) -->
+      <section class="audio-system-card" id="audio-tour-panel">
+        <h3 style="font-family: var(--font-display); font-size: 1.25rem; color: #fff; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px;">
+          🎧 DonKAI Interactive System Audio Tour <span style="font-size: 11px; background: var(--accent-cyan); color: #000; padding: 2px 8px; border-radius: 10px; font-weight: 700;">Read or Listen</span>
+        </h3>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1.2rem;">
+          Toggle below to listen to a guided audio walk-through of the DonKAI/Unykorn prediction matching, delta-hedging, and cryptographic auditing architecture.
+        </p>
+
+        <!-- Audio controls -->
+        <div class="audio-controls-row">
+          <div class="audio-btns">
+            <button id="audio-play-btn" class="audio-btn play">
+              <i data-lucide="play" style="width: 14px; height: 14px;"></i> Listen Guided Tour
+            </button>
+            <button id="audio-stop-btn" class="audio-btn stop" disabled>
+              <i data-lucide="square" style="width: 14px; height: 14px;"></i> Stop
+            </button>
+          </div>
+
+          <div class="audio-options-group">
+            <div class="voice-visualizer" id="equalizer-bars">
+              <div class="voice-bar"></div>
+              <div class="voice-bar"></div>
+              <div class="voice-bar"></div>
+              <div class="voice-bar"></div>
+              <div class="voice-bar"></div>
+            </div>
+            
+            <select id="voice-select" class="audio-select" title="Select Voice">
+              <option value="">Default System Voice</option>
+            </select>
+            
+            <select id="speed-select" class="audio-select" title="Speech Speed">
+              <option value="0.8">0.8x Speed</option>
+              <option value="1.0" selected>1.0x Speed</option>
+              <option value="1.2">1.2x Speed</option>
+              <option value="1.5">1.5x Speed</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Narratives Content -->
+        <div class="narratives-box" id="narratives-container">
+          
+          <div class="narrative-block" data-index="0" id="narrative-0">
+            <h4>
+              <i data-lucide="route" style="width: 16px; height: 16px; color: var(--accent-cyan);"></i>
+              1. Direct Custody Routing & Retail Netting (Scenario A & B)
+            </h4>
+            <p>
+              DonKAI implements a hybrid clearinghouse architecture. For wagers exceeding one hundred thousand USDC, capital is routed directly into isolated child wallets in BitGo qualified custody. Retail orders under one hundred thousand USDC are matched internally on our order book, earning a risk-free staking yield of four point five percent APR, and only swept to the Susquehanna OTC desk once net pool exposure crosses the netting threshold.
+            </p>
+          </div>
+
+          <div class="narrative-block" data-index="1" id="narrative-1">
+            <h4>
+              <i data-lucide="trending-up" style="width: 16px; height: 16px; color: var(--accent-purple);"></i>
+              2. Dynamic Black-Scholes Delta Hedging
+            </h4>
+            <p>
+              To maintain risk neutrality, our broker engine continuously calculates option pricing and portfolio delta using a Black-Scholes volatility engine. When a directional imbalance is identified, the system programmatically routes hedging execution orders through Coinbase Prime and decentralized Jupiter swaps on Solana, protecting the platform's solvency.
+            </p>
+          </div>
+
+          <div class="narrative-block" data-index="2" id="narrative-2">
+            <h4>
+              <i data-lucide="shield-alert" style="width: 16px; height: 16px; color: var(--accent-green);"></i>
+              3. Weighted Multi-Oracle Consensus & Arbitration
+            </h4>
+            <p>
+              We resolve contracts using a weighted M-of-N consensus model that aggregates feeds from Chainlink, Pyth Network, and the Federal Reserve. If a dispute is filed within the twenty-four hour challenge window, wagers are held in escrow and escalated to an independent multi-sig committee, removing any single point of failure.
+            </p>
+          </div>
+
+          <div class="narrative-block" data-index="3" id="narrative-3">
+            <h4>
+              <i data-lucide="lock" style="width: 16px; height: 16px; color: var(--gold);"></i>
+              4. Cryptographic State Chain Audit Ledger
+            </h4>
+            <p>
+              Every transaction block and EOD rebalancing sweep is recorded in an append-only cryptographic ledger. Utilizing SHA-256 hash chaining, each block mathematically locks to its predecessor. Any unauthorized attempt to inject database records breaks the hash chain instantly, automatically halting all BitGo disbursements.
+            </p>
+          </div>
+
+        </div>
+      </section>
+
     </main>
 
     <!-- Right Panel: Betting Slip -->

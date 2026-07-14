@@ -107,6 +107,32 @@ We offer a turn-key Platform-as-a-Service (PaaS) model, allowing enterprises to 
 
 ---
 
+## 🧮 Dynamic Leveraged Margin & Multi-Collateral Escrow Mechanics
+
+To provide bank-grade capital efficiency, the Unykorn broker middleware implements a prime brokerage margin lending framework for event contracts.
+
+### 1. Multi-Collateral Volatility Haircuts
+Rather than liquidating custody assets, institutions can post diverse collateral. We apply standard prime-brokerage haircuts to protect the clearinghouse from spot market volatility:
+- **USDC (Stablecoin)**: **0% Haircut** (1.00 margin valuation factor).
+- **SOL (Solana)**: **15% Haircut** (0.85 margin valuation factor).
+- **BTC (Bitcoin)**: **10% Haircut** (0.90 margin valuation factor).
+- **DIGau (Dignity Gold)**: **10% Haircut** (0.90 margin valuation factor). Net value is computed using the real-time Gold Spot oracle feed.
+
+### 2. Leveraged Position Sizing
+Clients can select leverage multipliers $L$ from **1x to 10x**. The effective position size $S_{\text{position}}$ is defined as:
+$$S_{\text{position}} = \text{Collateral Amount} \times \text{Valuation Factor} \times L$$
+
+### 3. Staking Yield Offset
+While positions are open, the net margin collateral remains in secure Qualified Custody, earning **4.5% APR staking yield**. This yield is accrued daily and programmatically offsets the broker's 0.25% ECN fee:
+$$\text{Daily Yield} = \frac{\text{Net Margin Collateral} \times 0.045}{365}$$
+
+### 4. Liquidation Odds Price Barrier
+For leveraged contracts ($L > 1$), liquidation occurs when the contract odds move against the trader, depleting the margin collateral below the **10% maintenance margin** requirement. The liquidation price threshold $Odds_{\text{liq}}$ is calculated dynamically:
+$$Odds_{\text{liq}} = Odds_{\text{entry}} \times \left( 1 - \frac{0.90}{L} \right)$$
+If the L2 market odds breach this threshold, the position is programmatically liquidated, and the collateral is swept to Coinbase Prime/Jupiter for hedging.
+
+---
+
 ## 🛠️ Standalone UI Verification
 
 We have initialized a dedicated front-end directory for the separated brand:
@@ -115,4 +141,4 @@ We have initialized a dedicated front-end directory for the separated brand:
 - **App Logic:** [app.js](file:///C:/Users/Kevan/.gemini/antigravity-ide/scratch/donkai-prediction-market/app.js)
 - **Styles CSS:** [style.css](file:///C:/Users/Kevan/.gemini/antigravity-ide/scratch/donkai-prediction-market/style.css)
 
-This standalone interface is currently served on **[http://localhost:9091](http://localhost:9091)** (Task ID `task-1777`). It includes an interactive betting slip demonstrating internal netting, potential payouts, ECN fees, and real-time custody ledger audits.
+This standalone interface is currently served on **[http://localhost:9091](http://localhost:9091)** (Task ID `task-1777`). It includes an interactive betting slip demonstrating internal netting, leveraged payouts, collateral haircuts, ECN fees, and real-time custody ledger audits.

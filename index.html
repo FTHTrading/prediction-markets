@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DonKAI • Macro Event Prediction Exchange</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="bg-glows">
+    <div class="glow-1"></div>
+    <div class="glow-2"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <span>⚡ DonKAI</span>
+      </div>
+      <ul class="nav-links">
+        <li><a class="nav-link active">Exchange Markets</a></li>
+        <li><a class="nav-link" id="custody-audit-tab">Custody Audit</a></li>
+        <li><a class="nav-link" id="netting-ledger-tab">Netting Pools</a></li>
+      </ul>
+      <div style="font-size: 11px; color: var(--accent-cyan); border: 1px solid var(--accent-cyan); padding: 6px 14px; border-radius: 20px; font-weight: 600; background: rgba(0, 242, 254, 0.05);">
+        Unykorn ECN: Active
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="app-layout">
+    
+    <!-- Left Panel: Markets -->
+    <main style="display: flex; flex-direction: column; gap: 2rem;">
+      
+      <!-- Macro Metric Tickers -->
+      <section class="ticker-row">
+        <div class="ticker-item">
+          <span class="ticker-label">DXY US Dollar Index</span>
+          <span class="ticker-value" id="ticker-dxy">104.5</span>
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-label">Gold Spot Price</span>
+          <span class="ticker-value" id="ticker-gold">$2,420.00</span>
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-label">Fed Target Rate</span>
+          <span class="ticker-value" id="ticker-fed">5.25%</span>
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-label">Bitcoin Spot</span>
+          <span class="ticker-value" id="ticker-btc">$63,400.00</span>
+        </div>
+      </section>
+
+      <!-- Active Event Markets -->
+      <section>
+        <h2 class="markets-title">Active Event Contracts</h2>
+        <div class="markets-grid">
+          
+          <!-- Market 1 -->
+          <div class="card market-card" id="market-fit21">
+            <div>
+              <div class="market-header">
+                <span class="market-badge">REGULATORY LEGISLATION</span>
+                <span style="font-size: 11px; color: var(--text-secondary); font-family: var(--font-mono);">Event ID: FIT21-SENATE</span>
+              </div>
+              <h3 class="market-title">Will the FIT21 Act pass the Senate before Q4 2026?</h3>
+            </div>
+            <div class="market-odds-row">
+              <button class="odds-btn yes active" data-market="fit21" data-side="YES">
+                <span>YES</span>
+                <span id="fit21-yes-price" style="font-family: var(--font-mono);">$0.65</span>
+              </button>
+              <button class="odds-btn no" data-market="fit21" data-side="NO">
+                <span>NO</span>
+                <span id="fit21-no-price" style="font-family: var(--font-mono);">$0.35</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Market 2 -->
+          <div class="card market-card" id="market-fedrate">
+            <div>
+              <div class="market-header">
+                <span class="market-badge">MONETARY POLICY</span>
+                <span style="font-size: 11px; color: var(--text-secondary); font-family: var(--font-mono);">Event ID: FED-RATE-SEP</span>
+              </div>
+              <h3 class="market-title">Will the Fed cut the Target Funds Rate in September 2026?</h3>
+            </div>
+            <div class="market-odds-row">
+              <button class="odds-btn yes" data-market="fedrate" data-side="YES">
+                <span>YES</span>
+                <span id="fedrate-yes-price" style="font-family: var(--font-mono);">$0.50</span>
+              </button>
+              <button class="odds-btn no" data-market="fedrate" data-side="NO">
+                <span>NO</span>
+                <span id="fedrate-no-price" style="font-family: var(--font-mono);">$0.50</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Custody Audit / Insurance Section -->
+      <section class="card" id="audit-card-panel">
+        <h3 style="font-family: var(--font-display); font-size: 1.25rem; color: #fff; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">🛡️ Real-Time Custody Audit Ledger</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px;">Unykorn Master Omnibus Wallet</div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-green); font-family: var(--font-mono);" id="audit-omnibus-balance">$1,115,000.00 USDC</div>
+            <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px; font-family: var(--font-mono);">Address: 0xd6d5132e3a7f379acfe4bcd0130cc9e77884692a</div>
+          </div>
+          <div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px;">Lloyd's syndicate Insurance</div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--gold); font-family: var(--font-mono);">$250,000,000.00</div>
+            <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">Regulated underwriter: BitGo Trust Company N.A.</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Right Panel: Betting Slip -->
+    <aside class="side-panel">
+      
+      <!-- Order Ticket -->
+      <div class="card" style="display: flex; flex-direction: column; gap: 10px;">
+        <div class="ticket-header">
+          <h3 style="font-family: var(--font-display); font-size: 1.15rem; color: #fff; margin: 0;">Order Ticket</h3>
+          <span style="font-size: 10px; color: var(--text-secondary); font-family: var(--font-mono); font-weight: bold;" id="ticket-market-id">FIT21-SENATE</span>
+        </div>
+
+        <div class="ticket-tab-row">
+          <div class="ticket-tab active" id="tab-buy-yes">BUY YES ($0.65)</div>
+          <div class="ticket-tab" id="tab-buy-no">BUY NO ($0.35)</div>
+        </div>
+
+        <div class="form-group">
+          <label for="wager-amount">Wager Size (USDC)</label>
+          <input type="number" id="wager-amount" class="form-control" value="10000" placeholder="1000">
+        </div>
+
+        <!-- Quick Size buttons -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px;">
+          <button class="btn" style="padding: 6px; font-size: 10px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); color: #fff; cursor: pointer; border-radius: 4px;" onclick="document.getElementById('wager-amount').value = 1000; updatePotentialPayout();">$1k</button>
+          <button class="btn" style="padding: 6px; font-size: 10px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); color: #fff; cursor: pointer; border-radius: 4px;" onclick="document.getElementById('wager-amount').value = 5000; updatePotentialPayout();">$5k</button>
+          <button class="btn" style="padding: 6px; font-size: 10px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); color: #fff; cursor: pointer; border-radius: 4px;" onclick="document.getElementById('wager-amount').value = 20000; updatePotentialPayout();">$20k</button>
+          <button class="btn" style="padding: 6px; font-size: 10px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); color: #fff; cursor: pointer; border-radius: 4px;" onclick="document.getElementById('wager-amount').value = 100000; updatePotentialPayout();">$100k+</button>
+        </div>
+
+        <!-- Expected Payout Details -->
+        <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; font-size: 11px; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">Potential Payout</span>
+            <strong style="color: var(--accent-green);" id="potential-payout">$15,384.62 USDC</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">Avg. Exec Rate</span>
+            <strong style="color: #fff;" id="avg-exec-rate">$0.65 / share</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">Unykorn ECN Fee (0.25%)</span>
+            <strong style="color: var(--accent-purple);" id="ecn-fee">$25.00 USDC</strong>
+          </div>
+        </div>
+
+        <!-- Netting Pool Visualizer (If wager < $100k) -->
+        <div id="netting-visualizer-box" style="margin-top: 10px; background: rgba(157, 78, 221, 0.05); border: 1px solid rgba(157, 78, 221, 0.2); padding: 12px; border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between; font-size: 10px; font-weight: bold;">
+            <span style="color: #fff;">Omnibus Netting Pool Status</span>
+            <span style="color: var(--accent-cyan);" id="netting-pool-pct">90% Full</span>
+          </div>
+          <div class="netting-bar-container">
+            <div class="netting-bar-fill" id="netting-pool-bar" style="width: 90%;"></div>
+          </div>
+          <div style="font-size: 9px; color: var(--text-secondary); line-height: 1.3;">
+            Current net YES pool: <strong id="netting-pool-val">$90,000</strong>. Wager will queue internally. Crosses the $100,000 threshold at next transaction to trigger BitGo block trade.
+          </div>
+        </div>
+
+        <button id="place-wager-btn" class="btn-primary" style="margin-top: 10px;">Place Event Wager</button>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <div class="toast" id="toast-notif">Wager placed successfully!</div>
+
+  <script src="app.js"></script>
+</body>
+</html>

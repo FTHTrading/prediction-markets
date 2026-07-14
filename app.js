@@ -35,6 +35,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const nettingPoolVal = document.getElementById('netting-pool-val');
     const nettingVisualizerBox = document.getElementById('netting-visualizer-box');
 
+    // Leverage and Collateral Elements
+    const collateralSelect = document.getElementById('collateral-select');
+    const leverageSelect = document.getElementById('leverage-select');
+    const leverageValLabel = document.getElementById('leverage-val-label');
+    const collateralNetValEl = document.getElementById('collateral-net-val');
+    const dailyStakingYieldEl = document.getElementById('daily-staking-yield');
+    const liqBarrierRow = document.getElementById('liq-barrier-row');
+    const liqBarrierValEl = document.getElementById('liq-barrier-val');
+
     // Init Lucide Icons
     if (window.lucide) {
         window.lucide.createIcons();
@@ -104,32 +113,66 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     wagerAmountInput.addEventListener('input', updateTicketUI);
+    collateralSelect.addEventListener('change', updateTicketUI);
+    leverageSelect.addEventListener('input', () => {
+        const val = leverageSelect.value;
+        leverageValLabel.textContent = val === '1' ? '1x (No Leverage)' : `${val}x Leverage`;
+        updateTicketUI();
+    });
 
     function updateTicketUI() {
-        const wager = parseFloat(wagerAmountInput.value) || 0;
+        const amount = parseFloat(wagerAmountInput.value) || 0;
         
-        // 1. Get Odds Rate
+        // 1. Collateral Haircut Calculations
+        let factor = 1.0;
+        const collateralType = collateralSelect.value;
+        if (collateralType === 'SOL') factor = 0.85;
+        else if (collateralType === 'BTC') factor = 0.90;
+        else if (collateralType === 'DIGau') factor = 0.90;
+
+        const netCollateralValue = amount * factor;
+        collateralNetValEl.textContent = `$${netCollateralValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} USDC`;
+
+        // 2. Leverage and Position Size
+        const leverage = parseInt(leverageSelect.value) || 1;
+        const positionSize = netCollateralValue * leverage;
+
+        // 3. Get Odds Rate
         const yesOdds = state.yesOdds[state.selectedMarket];
         const odds = state.selectedSide === 'YES' ? yesOdds : (1 - yesOdds);
         
-        // 2. Calculations
-        const shares = wager / odds;
+        // 4. Position Payout calculations
+        const shares = positionSize / odds;
         const potentialPayout = shares;
-        const ecnFee = wager * 0.0025;
+        const ecnFee = positionSize * 0.0025;
 
-        // 3. Update Text
+        // 5. Daily Staking Yield (4.5% APR on collateral margin value)
+        const dailyYield = netCollateralValue * 0.045 / 365;
+        dailyStakingYieldEl.textContent = `$${dailyYield.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} USDC / day`;
+
+        // 6. Leverage Liquidation Barrier Calculations
+        if (leverage > 1) {
+            liqBarrierRow.style.display = 'flex';
+            // Price drop where margin is fully depleted (10% maintenance margin)
+            const liqBarrier = odds * (1 - 0.90 / leverage);
+            liqBarrierValEl.textContent = `$${liqBarrier.toFixed(2)}`;
+        } else {
+            liqBarrierRow.style.display = 'none';
+        }
+
+        // 7. Update Text Display
         avgExecRateEl.textContent = `$${odds.toFixed(2)} / share`;
         potentialPayoutEl.textContent = `$${potentialPayout.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} USDC`;
         ecnFeeEl.textContent = `$${ecnFee.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} USDC`;
 
-        // 4. Update Netting Visualizer & Account Routing Status
-        if (wager >= 100000) {
+        // 8. Update Netting Visualizer & Account Routing Status (based on total position size)
+        if (positionSize >= 100000) {
             nettingVisualizerBox.style.background = 'rgba(0, 242, 254, 0.05)';
             nettingVisualizerBox.style.borderColor = 'rgba(0, 242, 254, 0.2)';
             nettingPoolPct.textContent = 'Scenario A';
             nettingPoolBar.style.width = '100%';
             nettingPoolBar.style.background = 'var(--accent-cyan)';
-            nettingPoolVal.parentElement.innerHTML = `💸 Large block trade matches **Scenario A (Direct Institutional)**. Will route directly to dedicated BitGo Child Enterprise.`;
+            nettingPoolVal.parentElement.innerHTML = `💸 Total position ($${positionSize.toLocaleString()}) matches **Scenario A (Direct Institutional)**. Sweeps directly to dedicated BitGo Child Enterprise.`;
         } else {
             nettingVisualizerBox.style.background = 'rgba(157, 78, 221, 0.05)';
             nettingVisualizerBox.style.borderColor = 'rgba(157, 78, 221, 0.2)';
@@ -137,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const marketPool = state.nettingPools[state.selectedMarket];
             const currentNetVal = Math.abs(marketPool.YES - marketPool.NO);
-            const newNetVal = currentNetVal + wager;
+            const newNetVal = currentNetVal + positionSize;
             const pct = Math.min(100, (newNetVal / 100000) * 100);
             
             nettingPoolPct.textContent = `${pct.toFixed(0)}% Full`;

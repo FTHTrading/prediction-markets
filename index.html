@@ -216,8 +216,8 @@
 
     </main>
 
-    <!-- Right Panel: Betting Slip -->
-    <aside class="side-panel">
+    <!-- Right Panel: Betting Slip & Unykorn Advantages -->
+    <aside class="side-panel" style="display: flex; flex-direction: column; gap: 1.5rem;">
       
       <!-- Order Ticket -->
       <div class="card" style="display: flex; flex-direction: column; gap: 10px;">
@@ -231,28 +231,60 @@
           <div class="ticket-tab" id="tab-buy-no">BUY NO ($0.35)</div>
         </div>
 
+        <!-- Collateral Selection -->
         <div class="form-group">
-          <label for="wager-amount">Wager Size (USDC)</label>
+          <label for="collateral-select">Escrow Collateral Type</label>
+          <select id="collateral-select" class="form-control" style="background: #030712; cursor: pointer;">
+            <option value="USDC" selected>USDC (Stablecoin • 1:1 Value)</option>
+            <option value="SOL">SOL (Solana • 15% Vol Haircut)</option>
+            <option value="BTC">BTC (Bitcoin • 10% Vol Haircut)</option>
+            <option value="DIGau">DIGau (Dignity Gold • 10% Haircut)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="wager-amount">Collateral Amount</label>
           <input type="number" id="wager-amount" class="form-control" value="10000" placeholder="1000">
         </div>
 
         <!-- Quick Size buttons -->
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px;">
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 6px;">
           <button class="btn" style="padding: 6px; font-size: 10px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); color: #fff; cursor: pointer; border-radius: 4px;" onclick="document.getElementById('wager-amount').value = 1000; updatePotentialPayout();">$1k</button>
           <button class="btn" style="padding: 6px; font-size: 10px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); color: #fff; cursor: pointer; border-radius: 4px;" onclick="document.getElementById('wager-amount').value = 5000; updatePotentialPayout();">$5k</button>
           <button class="btn" style="padding: 6px; font-size: 10px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); color: #fff; cursor: pointer; border-radius: 4px;" onclick="document.getElementById('wager-amount').value = 20000; updatePotentialPayout();">$20k</button>
           <button class="btn" style="padding: 6px; font-size: 10px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); color: #fff; cursor: pointer; border-radius: 4px;" onclick="document.getElementById('wager-amount').value = 100000; updatePotentialPayout();">$100k+</button>
         </div>
 
+        <!-- Leverage Slider -->
+        <div class="form-group" style="margin-top: 6px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 6px;">
+            <label style="margin: 0;">Trading Leverage</label>
+            <strong id="leverage-val-label" style="color: var(--accent-cyan); font-family: var(--font-mono);">1x (No Leverage)</strong>
+          </div>
+          <input type="range" id="leverage-select" min="1" max="10" step="1" value="1" style="width: 100%; accent-color: var(--accent-cyan); background: #030712; cursor: pointer;">
+        </div>
+
         <!-- Expected Payout Details -->
         <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; font-size: 11px; display: flex; flex-direction: column; gap: 6px;">
           <div style="display: flex; justify-content: space-between;">
-            <span style="color: var(--text-secondary);">Potential Payout</span>
+            <span style="color: var(--text-secondary);">Collateral Margin Value</span>
+            <strong style="color: #fff;" id="collateral-net-val">$10,000.00 USDC</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">Potential Payout (at expiry)</span>
             <strong style="color: var(--accent-green);" id="potential-payout">$15,384.62 USDC</strong>
           </div>
           <div style="display: flex; justify-content: space-between;">
             <span style="color: var(--text-secondary);">Avg. Exec Rate</span>
             <strong style="color: #fff;" id="avg-exec-rate">$0.65 / share</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">Daily Staking Yield Earned</span>
+            <strong style="color: var(--accent-green);" id="daily-staking-yield">$1.23 USDC / day</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; display: none;" id="liq-barrier-row">
+            <span style="color: var(--accent-red);">Liquidation Price Barrier</span>
+            <strong style="color: var(--accent-red);" id="liq-barrier-val">$0.58</strong>
           </div>
           <div style="display: flex; justify-content: space-between;">
             <span style="color: var(--text-secondary);">Unykorn ECN Fee (0.25%)</span>
@@ -275,6 +307,43 @@
         </div>
 
         <button id="place-wager-btn" class="btn-primary" style="margin-top: 10px;">Place Event Wager</button>
+      </div>
+
+      <!-- Unykorn Institutional Edge Advantages Widget -->
+      <div class="card" style="display: flex; flex-direction: column; gap: 12px; background: linear-gradient(145deg, rgba(13, 20, 38, 0.6) 0%, rgba(9, 13, 28, 0.8) 100%);">
+        <h4 style="font-family: var(--font-display); font-size: 0.95rem; color: #fff; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; margin: 0; display: flex; align-items: center; gap: 6px;">
+          🛡️ Unykorn Prime Brokerage Advantages
+        </h4>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 11px;">
+          <li style="display: flex; align-items: flex-start; gap: 8px;">
+            <span style="color: var(--accent-cyan); font-weight: bold;">✓</span>
+            <div>
+              <strong style="color: #fff; display: block;">Bankruptcy-Remote Sub-Accounts</strong>
+              <span style="color: var(--text-secondary);">Collateral is kept isolated within individual BitGo Child Enterprise accounts rather than pooled.</span>
+            </div>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 8px;">
+            <span style="color: var(--accent-cyan); font-weight: bold;">✓</span>
+            <div>
+              <strong style="color: #fff; display: block;">CFTC de minimis Swap Clearing</strong>
+              <span style="color: var(--text-secondary);">Wagers executed as bilateral event swaps under the CFTC swap dealer de minimis exemption, capping annualized volume at $8 Billion.</span>
+            </div>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 8px;">
+            <span style="color: var(--accent-cyan); font-weight: bold;">✓</span>
+            <div>
+              <strong style="color: #fff; display: block;">Staking Yield Optimization</strong>
+              <span style="color: var(--text-secondary);">Open positions continue to earn 4.5% APR staking yield directly offsetting execution and transaction fees.</span>
+            </div>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 8px;">
+            <span style="color: var(--accent-cyan); font-weight: bold;">✓</span>
+            <div>
+              <strong style="color: #fff; display: block;">Provably Secure Ledger</strong>
+              <span style="color: var(--text-secondary);">All audit blocks are locked in an append-only ledger using SHA-256 hash chaining, guaranteeing database immutability.</span>
+            </div>
+          </li>
+        </ul>
       </div>
 
     </aside>

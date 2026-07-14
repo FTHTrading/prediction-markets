@@ -79,6 +79,23 @@ app.get('/api/pool-status', (req, res) => {
 });
 
 // ------------------------------------------------------------------------
+// Endpoint: Get Cryptographic Audit Trail
+// ------------------------------------------------------------------------
+app.get('/api/audit-trail', (req, res) => {
+  try {
+    const dbPath = path.join(__dirname, 'default.json');
+    if (fs.existsSync(dbPath)) {
+      const fileContent = fs.readFileSync(dbPath, 'utf8');
+      const dbData = JSON.parse(fileContent);
+      return res.json({ success: true, audit_trail: dbData.audit_trail || [] });
+    }
+    res.json({ success: true, audit_trail: [] });
+  } catch (err) {
+    res.status(500).json({ error: true, message: err.message });
+  }
+});
+
+// ------------------------------------------------------------------------
 // Endpoint: Get Delta Hedging Metrics
 // ------------------------------------------------------------------------
 app.get('/api/delta-hedging', (req, res) => {

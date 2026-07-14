@@ -23,9 +23,9 @@
         <span>⚡ DonKAI</span>
       </div>
       <ul class="nav-links">
-        <li><a class="nav-link active">Exchange Markets</a></li>
-        <li><a class="nav-link" id="custody-audit-tab">Custody Audit</a></li>
-        <li><a class="nav-link" id="netting-ledger-tab">Netting Pools</a></li>
+        <li><a class="nav-link active" id="nav-exchange">Exchange Markets</a></li>
+        <li><a class="nav-link" id="nav-audit">Custody Audit</a></li>
+        <li><a class="nav-link" id="nav-cockpit">JV Cockpit</a></li>
       </ul>
       <div style="font-size: 11px; color: var(--accent-cyan); border: 1px solid var(--accent-cyan); padding: 6px 14px; border-radius: 20px; font-weight: 600; background: rgba(0, 242, 254, 0.05);">
         Unykorn ECN: Active
@@ -59,8 +59,11 @@
         </div>
       </section>
 
-      <!-- Active Event Markets -->
-      <section>
+      <!-- Exchange View Wrapper -->
+      <div id="exchange-view" class="tab-content-panel">
+
+        <!-- Active Event Markets -->
+        <section>
         <h2 class="markets-title">Active Event Contracts</h2>
         <div class="markets-grid">
           
@@ -108,23 +111,45 @@
 
         </div>
       </section>
+      </div>
 
-      <!-- Custody Audit / Insurance Section -->
-      <section class="card" id="audit-card-panel">
-        <h3 style="font-family: var(--font-display); font-size: 1.25rem; color: #fff; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">🛡️ Real-Time Custody Audit Ledger</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-          <div>
-            <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px;">Unykorn Master Omnibus Wallet</div>
-            <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-green); font-family: var(--font-mono);" id="audit-omnibus-balance">$1,115,000.00 USDC</div>
-            <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px; font-family: var(--font-mono);">Address: 0xd6d5132e3a7f379acfe4bcd0130cc9e77884692a</div>
+      <!-- Audit View Wrapper (Custody Audit + Ledger Blocks) -->
+      <div id="audit-view" class="tab-content-panel" style="display: none; flex-direction: column; gap: 2rem;">
+        
+        <!-- Custody Audit / Insurance Section -->
+        <section class="card" id="audit-card-panel">
+          <h3 style="font-family: var(--font-display); font-size: 1.25rem; color: #fff; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">🛡️ Real-Time Custody Audit Ledger</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+              <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px;">Unykorn Master Omnibus Wallet</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-green); font-family: var(--font-mono);" id="audit-omnibus-balance">$1,115,000.00 USDC</div>
+              <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px; font-family: var(--font-mono);">Address: 0xd6d5132e3a7f379acfe4bcd0130cc9e77884692a</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px;">Lloyd's syndicate Insurance</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: var(--gold); font-family: var(--font-mono);">$250,000,000.00</div>
+              <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">Regulated underwriter: BitGo Trust Company N.A.</div>
+            </div>
           </div>
-          <div>
-            <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px;">Lloyd's syndicate Insurance</div>
-            <div style="font-size: 1.5rem; font-weight: 700; color: var(--gold); font-family: var(--font-mono);">$250,000,000.00</div>
-            <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">Regulated underwriter: BitGo Trust Company N.A.</div>
+        </section>
+
+        <!-- Cryptographic Audit Blocks -->
+        <section class="card">
+          <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: #fff; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+            <span>⛓️ Cryptographic Audit Trail Blocks</span>
+            <span style="font-size: 10px; background: rgba(0, 245, 160, 0.1); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 2px 8px; border-radius: 10px; font-weight: bold;" id="ledger-status-badge">Verifying Chain...</span>
+          </h3>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1.2rem;">
+            Below is the real-time SHA-256 hash chain loaded directly from the append-only database. Any data modification breaks the parent links instantly.
+          </p>
+          <div id="audit-blocks-container" style="display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 5px;">
+            <div style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); text-align: center; padding: 20px;">
+              Loading cryptographic ledger blocks...
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+      </div>
 
       <!-- Interactive System Audio Tour (Read or Listen) -->
       <section class="audio-system-card" id="audio-tour-panel">
@@ -209,6 +234,63 @@
             <p>
               Every transaction block and EOD rebalancing sweep is recorded in an append-only cryptographic ledger. Utilizing SHA-256 hash chaining, each block mathematically locks to its predecessor. Any unauthorized attempt to inject database records breaks the hash chain instantly, automatically halting all BitGo disbursements.
             </p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- JV Automation Cockpit View -->
+      <section class="card tab-view-content" id="cockpit-view" style="display: none; flex-direction: column; gap: 20px;">
+        <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-family: var(--font-display); font-size: 1.25rem; color: #fff; margin: 0; display: flex; align-items: center; gap: 8px;">
+            🏢 Multi-Agent JV Automation Pipeline
+          </h3>
+          <span style="font-size: 11px; background: var(--accent-purple); color: #fff; padding: 4px 10px; border-radius: 12px; font-weight: 700; font-family: var(--font-mono);">#KiwisMulligan1</span>
+        </div>
+        
+        <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 5px;">
+          Automate the verification, compliance vetting, custodian vault allocation, and tokenized preferred equity deployment of corporate JV proposals.
+        </p>
+
+        <!-- Pipeline Steps indicators -->
+        <div style="display: flex; gap: 10px; justify-content: space-between; margin-bottom: 10px;">
+          <div class="pipeline-step active" id="p-step-1" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--accent-cyan); background: rgba(0, 242, 254, 0.03); text-align: center; font-size: 11px; transition: var(--transition);">
+            <strong style="display: block; color: var(--accent-cyan);">AGENT 1</strong>
+            <span style="color: #fff;">Underwriting & Vetting</span>
+          </div>
+          <div class="pipeline-step" id="p-step-2" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.01); text-align: center; font-size: 11px; transition: var(--transition);">
+            <strong style="display: block; color: var(--text-secondary);">AGENT 2</strong>
+            <span style="color: #fff;">BitGo Enterprise Policy</span>
+          </div>
+          <div class="pipeline-step" id="p-step-3" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.01); text-align: center; font-size: 11px; transition: var(--transition);">
+            <strong style="display: block; color: var(--text-secondary);">AGENT 3</strong>
+            <span style="color: #fff;">x402 RWA Tokenization</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px;">
+          
+          <!-- Column 1: Deal Ingestion -->
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="form-group">
+              <label for="cockpit-payload" style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; display: block;">Raw Deal Payload (Emails & Deck Context)</label>
+              <textarea id="cockpit-payload" class="form-control" style="height: 220px; font-family: var(--font-mono); font-size: 10px; line-height: 1.4; background: #030712; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; color: var(--text-secondary); width: 100%; resize: none;">[Ingested Proposal: #KiwisMulligan1]
+Deal: Kiwi's Mulligan Experiential Golf bay and Entertainment Venue (Alpharetta, GA).
+Lead Sponsor: Young Woo, Paresh Govan (Fine Mulligans Inc.).
+Raise Target: $27,000,000 USD via Castle Placement Private Placement ECN.
+Entity Val: $48,000,000 pre-revenue valuation.
+Vulnerability Check: A halted Reg A+ filing exists. Audit records reveal a $1.2M historical debt liability, and a core seed capital associate is flagged under SEC Rule 506(d) as a disqualifying Bad Actor.</textarea>
+            </div>
+            
+            <button class="btn-primary" id="run-pipeline-btn" style="padding: 10px; border-radius: 8px; font-weight: bold;">Execute AI Pipeline</button>
+            <button class="btn" id="excise-btn" style="display: none; background: rgba(0, 245, 160, 0.1); border: 1px solid var(--accent-green); color: var(--accent-green); padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: var(--transition);">✂️ Excise Bad Actor & Debt</button>
+          </div>
+
+          <!-- Column 2: Terminal Console -->
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="font-size: 11px; color: var(--text-secondary);">Pipeline Terminal Output</div>
+            <div id="cockpit-terminal" style="flex: 1; background: #010409; border: 1px solid var(--border-color); border-radius: 8px; font-family: var(--font-mono); font-size: 10px; padding: 12px; height: 260px; overflow-y: auto; color: var(--accent-cyan); white-space: pre-wrap;">Unykorn Cockpit Shell v1.0.0
+System ready. Awaiting deal payload...</div>
           </div>
 
         </div>

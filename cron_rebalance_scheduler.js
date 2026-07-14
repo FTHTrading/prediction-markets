@@ -39,7 +39,8 @@ export class RebalanceScheduler {
         // Threshold: only rebalance if the required volume is significant
         if (Math.abs(rawRequired) > 1.0) {
           const action = rawRequired > 0 ? 'SWEEP_GO_TO_VAULT' : 'SWEEP_VAULT_TO_GO';
-          const transferAmount = Math.abs(rawRequired * hedge.underlyingSolSpotPrice || rawRequired);
+          const spotPrice = hedge.underlyingSolSpotPrice || hedge.underlyingDxySpotPrice || 1.0;
+          const transferAmount = Math.abs(rawRequired * spotPrice);
 
           console.log(`⚡ [Rebalance Cron] Rebalancing Action required for ${marketId.toUpperCase()}:`);
           console.log(`   - Action:         ${action}`);

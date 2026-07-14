@@ -26,6 +26,10 @@ export function nd(x) {
 
 // Calculate Black-Scholes binary option pricing & delta
 export function calculateBinaryDelta(S, K, sigma, timeDays, r = 0.0525) {
+  if (isNaN(S) || S <= 0 || isNaN(K) || K <= 0 || isNaN(sigma) || sigma <= 0) {
+    throw new Error("Invalid pricing parameters: Spot price (S), strike (K), and volatility (sigma) must be strictly positive numbers.");
+  }
+
   const tau = Math.max(0.0001, timeDays / 365.0); // time to maturity in years
   
   const d2 = (Math.log(S / K) + (r - (sigma * sigma) / 2.0) * tau) / (sigma * Math.sqrt(tau));

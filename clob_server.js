@@ -112,14 +112,31 @@ export function startWebSocketClobServer(port = 3399) {
       try {
         const payload = JSON.parse(message);
         if (payload.action === 'limit_order') {
+          const price = parseFloat(payload.price);
+          const size = parseInt(payload.size);
+          const side = payload.side;
+          const marketId = payload.marketId;
+
+          if (isNaN(price) || price < 0.01 || price > 0.99 ||
+              isNaN(size) || size <= 0 ||
+              (side !== 'BUY' && side !== 'SELL') ||
+              !marketId) {
+            
+            ws.send(JSON.stringify({
+              event: 'error',
+              message: 'Invalid order parameters. Price must be [0.01, 0.99], size must be > 0, side must be BUY/SELL, and marketId must be provided.'
+            }));
+            return;
+          }
+
           const order = {
             id: `ord_${Math.floor(Math.random() * 100000)}`,
-            price: parseFloat(payload.price),
-            size: parseInt(payload.size),
+            price,
+            size,
             timestamp: Date.now()
           };
 
-          if (payload.side === 'BUY') {
+          if (side === 'BUY') {
             book.addBid(order);
           } else {
             book.addAsk(order);

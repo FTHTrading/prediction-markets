@@ -99,6 +99,10 @@ export class OracleConsensusEngine {
       throw new Error(`Arbitration resolution only allowed in Disputed state. Current state: ${this.state}`);
     }
 
+    if (committeeVote !== 0 && committeeVote !== 1) {
+      throw new Error("Invalid committee vote. Arbitration vote must be strictly 0 (NO) or 1 (YES).");
+    }
+
     this.state = 'Arbitrated';
     this.finalResolution = committeeVote; // 1 for YES, 0 for NO
     console.log(`🏛️ [Arbitration Complete] Committee ruled outcome for ${this.marketId}: ${committeeVote === 1 ? 'YES' : 'NO'}`);

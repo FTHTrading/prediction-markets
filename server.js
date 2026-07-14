@@ -124,12 +124,20 @@ app.get('/api/delta-hedging', (req, res) => {
 app.post('/api/wager', async (req, res) => {
   const { userId, name, side, amount, market } = req.body;
   
-  if (!amount || amount <= 0 || !market || !side) {
+  const parsedAmount = parseFloat(amount);
+  
+  if (isNaN(parsedAmount) || parsedAmount <= 0 || !market || !side) {
     return res.status(400).json({ error: true, message: 'Invalid trade inputs' });
   }
 
-  const parsedAmount = parseFloat(amount);
-  
+  if (!state.nettingPools[market]) {
+    return res.status(400).json({ error: true, message: `Market identifier '${market}' is invalid or not supported.` });
+  }
+
+  if (side !== 'YES' && side !== 'NO') {
+    return res.status(400).json({ error: true, message: `Trade side must be strictly YES or NO.` });
+  }
+
   console.log(`\n[Ledger Ingest] Wager: $${parsedAmount.toLocaleString()} USDC on ${side} for ${market.toUpperCase()} from ${name}`);
   
   // 1. Record wager in internal ledger
